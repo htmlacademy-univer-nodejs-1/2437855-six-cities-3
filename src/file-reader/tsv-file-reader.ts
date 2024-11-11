@@ -1,6 +1,6 @@
 import { createReadStream } from 'node:fs';
-import EventEmitter from 'node:events';
 import { FileReader } from './file-reader.interface.js';
+import EventEmitter from 'node:events';
 
 const CHUNK_SIZE = 16384; // 16KB
 
@@ -9,28 +9,30 @@ export class TSVFileReader extends EventEmitter implements FileReader {
     super();
   }
 
-  public read(): void {
+  async read(): Promise<void> {
     const stream = createReadStream(this.path, {
-        encoding: 'utf-8',
-        highWaterMark: CHUNK_SIZE
-      });
-      let content = '';
-      let importedRowCount = 0;
-  
-      stream.on('data', (chunk: Buffer) => {
-        content += chunk.toString();
-  
-        while (content.indexOf('\n') >= 0) {
-          let nextLinePosition = content.indexOf('\n');
-          const completeRow = content.slice(0, nextLinePosition + 1);
-          content = content.slice(++nextLinePosition);
-          importedRowCount++;
-          this.emit('line', completeRow);
-        }
-      });
-  
-      stream.on('end', () => {
-        this.emit('end', importedRowCount);
-      });
+      encoding: 'utf-8',
+      highWaterMark: CHUNK_SIZE
+    });
+
+    let remainingData = '';
+    let nextLinePosition = -1;
+    let importedRowCount = 0;
+
+    for await (const chunk of stream) {
+      remainingData += chunk.toString();
+
+      while ((nextLinePosition = remainingData.indexOf('\n')) >= 0) {
+        const completeRow = remainingData.slice(0, nextLinePosition + 1);
+        remainingData = remainingData.slice(++nextLinePosition);
+        importedRowCount++;
+
+        await new Promise((resolve) => {
+          this.emit('line', completeRow, resolve);
+        });
+      }
+    }
+
+    this.emit('end', importedRowCount);
   }
 }

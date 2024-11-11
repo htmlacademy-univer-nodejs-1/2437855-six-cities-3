@@ -1,13 +1,27 @@
 #!/usr/bin/env node
-import {CLIApplication, HelpCommand, ImportCommand, VersionCommand} from './cli/index.js';
+import 'reflect-metadata';
+import { Container } from 'inversify';
+import { CLIApplication, GenerateCommand, HelpCommand, ImportCommand, VersionCommand} from './cli/index.js';
+import { Component } from './types/index.js';
+import { createUserContainer } from './modules/user/index.js';
+
+import { createSLIApplication } from './cli/cli.container.js';
+import { createOfferContainer } from './modules/offer/offer.container.js';
 
 const bootstrap = () => {
-  const claApplication = new CLIApplication();
+  const cliContainer = Container.merge(createSLIApplication(), createUserContainer(), createOfferContainer());
+  const claApplication = cliContainer.get<CLIApplication>(Component.CLIApplication);
+  const versionCommand = cliContainer.get<VersionCommand>(Component.VersionCommand);
+  const helpCommand = cliContainer.get<HelpCommand>(Component.HelpCommand);
+  const importCommand = cliContainer.get<ImportCommand>(Component.ImportCommand);
+  const generateCommand = cliContainer.get<GenerateCommand>(Component.GenerateCommand);
   claApplication.register([
-    new VersionCommand(),
-    new HelpCommand(),
-    new ImportCommand(),
+    versionCommand,
+    helpCommand,
+    importCommand,
+    generateCommand,
   ]);
+
   claApplication.processCommand(process.argv);
 };
 

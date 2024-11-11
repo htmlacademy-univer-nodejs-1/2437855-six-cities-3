@@ -1,11 +1,17 @@
 import got from 'got';
-import { MockServerData } from '../../types/index.js';
+import { Component, MockServerData } from '../../types/index.js';
 import { Command } from './command.interface.js';
 import { TSVOfferGenerator } from '../../offer-generator/index.js';
 import { TSVFileWriter } from '../../file-writer/tsv-file-writer.js';
-import { getErrorMessage } from '../../helpers/index.js';
+import { inject, injectable } from 'inversify';
+import { Logger } from '../../logger/logger.interface.js';
+import chalk from 'chalk';
 
+@injectable()
 export class GenerateCommand implements Command {
+  constructor(
+    @inject(Component.Logger) private readonly logger: Logger,
+  ) {}  
   private initialData!: MockServerData;
 
   public getName(): string {
@@ -35,9 +41,9 @@ export class GenerateCommand implements Command {
     try {
       await this.load(url);
       await this.write(filepath, offerCount);
+      this.logger.info(`${chalk.green(`Successfully generated ${chalk.bgYellowBright(` ${offerCount} `)} offers`)}`);
     } catch (error: unknown) {
-      console.error('Can\'t generate data');
-      console.error(getErrorMessage(error));
+      this.logger.error('Can\'t generate data', error as Error);
     }
   }
 }
