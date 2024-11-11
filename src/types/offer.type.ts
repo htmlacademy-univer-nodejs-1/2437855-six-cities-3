@@ -18,7 +18,7 @@ export type Offer = {
   guest: number;
   price: number;
   conveniences: Conveniences[];
-  user: User;
+  user: Omit<User, 'password'>;
   commentsCount: number;
   coords: [string, string];
 }
