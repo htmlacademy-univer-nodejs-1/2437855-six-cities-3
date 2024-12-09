@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 import { DocumentType } from '@typegoose/typegoose';
 import { CommentRdo } from './rdo/comment.rdo.js';
 import { fillDTO } from '../../helpers/index.js';
-import { CreateCommentRequest } from './create-comment-request.type.js';
+import { CreateCommentRequest } from './comment-request.type.js';
 import { CreateCommentDto } from './dto/createComment.dto.js';
 
 export class CommentController extends BaseController {
