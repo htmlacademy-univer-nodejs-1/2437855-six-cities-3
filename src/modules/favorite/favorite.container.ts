@@ -5,7 +5,7 @@ import { FavoriteEntity, FavoriteModel } from './favorite.entity.js';
 import { FavoriteService } from './favorite-service.interface.js';
 import { DefaultFavoriteService } from './default-favorite.service.js';
 import { FavoriteController } from './favorite.controller.js';
-import { Controller } from '../../rest/index.js';
+import { Controller } from '../../libs/rest/index.js';
 
 export const createFavoriteContainer = () => {
   const favoriteContainter = new Container();

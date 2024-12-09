@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { Ref, defaultClasses, getModelForClass, modelOptions, prop } from '@typegoose/typegoose';
-import { City, Conveniences, HouseTypeEnum } from '../../types/index.js';
+import { City, Convenience, HouseTypeEnum } from '../../types/index.js';
 import { UserEntity } from '../user/user.entity.js';
-
-export interface OfferEntity extends defaultClasses.Base {}
+import { Types } from 'mongoose';
 
 @modelOptions({
   schemaOptions: {
@@ -15,57 +13,55 @@ export interface OfferEntity extends defaultClasses.Base {}
 })
 export class OfferEntity extends defaultClasses.TimeStamps {
   @prop()
-  public title!: string;
+  public title: string;
 
   @prop()
-  public description!: string;
+  public description: string;
 
   @prop()
-  public postDate!: Date;
+  public postDate: Date;
 
   @prop()
-  public city!: City;
+  public city: City;
 
   @prop()
-  public preview!: string;
+  public preview: string;
 
   @prop()
-  public images!: string[];
+  public images: string[];
 
   @prop()
-  public isPremium!: boolean;
+  public isPremium: boolean;
 
   @prop()
-  public isFavorite!: boolean;
+  public houseType: HouseTypeEnum;
 
   @prop()
-  public rate!: number;
+  public room: number;
 
   @prop()
-  public houseType!: HouseTypeEnum;
+  public guest: number;
 
   @prop()
-  public room!: number;
+  public price: number;
 
   @prop()
-  public guest!: number;
-
-  @prop()
-  public price!: number;
-
-  @prop()
-  public conveniences!: Conveniences[];
+  public conveniences: Convenience[];
 
   @prop({
     ref: UserEntity
   })
-  public userId!: Ref<UserEntity>;
+  public userId: Ref<UserEntity>;
 
   @prop()
-  public commentsCount!: number;
+  public commentsCount: number;
 
   @prop()
-  public coords!: [string, string];
+  public coords: [string, string];
+
+  public id: string;
+
+  public _id: Types.ObjectId;
 }
 
 export const OfferModel = getModelForClass(OfferEntity);

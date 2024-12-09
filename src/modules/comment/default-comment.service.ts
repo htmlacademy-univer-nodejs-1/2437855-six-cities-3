@@ -3,7 +3,7 @@ import { Component, SortType } from '../../types/index.js';
 import { inject, injectable } from 'inversify';
 import { CommentEntity } from './comment.entity.js';
 import { CommentService } from './comment-service.interface.js';
-import { CreateCommentDto } from './dto/createComment.dto.js';
+import { CreateCommentDto } from './dto/create-comment-dto.js';
 import { DEFAULT_COMMENT_COUNT } from './comment.constant.js';
 import { Types } from 'mongoose';
 
@@ -24,11 +24,11 @@ export class DefaultCommentService implements CommentService {
       .limit(limit).exec();
   }
 
-  public async deleteByOfferId(offerId: Types.ObjectId): Promise<number> {
-    const result = await this.commentModel
+  public async deleteByOfferId(offerId: Types.ObjectId): Promise<null> {
+    await this.commentModel
       .deleteMany({offerId})
       .exec();
 
-    return result.deletedCount;
+    return null;
   }
 }
